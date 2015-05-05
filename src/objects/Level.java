@@ -53,6 +53,7 @@ public class Level {
 	private int mapWidth; // The map array width.
 	private int mapHeight; // The map array height.
 	private int[][] map; // The map array. (height, width)
+	private boolean[][] mapFlag; // The map flag array. (height, width)
 	private int tileSize; // The tileSize. Preferably 32.
 	private ArrayList<Rectangle2D.Double> barrierCollisionBoxes; // The
 																	// arraylist
@@ -198,7 +199,7 @@ public class Level {
 	 * @param tileSize
 	 *            the pixel size of a tile. 32 is perferable.
 	 */
-	BufferedImage img;
+	BufferedImage img = null;
 	public void populateMap(String fileName, int tileSize) {
 		try {
 			String parser = " ";
@@ -212,6 +213,7 @@ public class Level {
 			this.mapHeight = Integer.parseInt(imageReader.readLine());
 
 			this.map = new int[this.mapHeight][this.mapWidth];
+			this.mapFlag = new boolean[this.mapHeight][this.mapWidth];
 
 			for (int r = 0; r < this.map.length; r++) {
 				// Get line of numbers and spaces.
@@ -358,8 +360,10 @@ public class Level {
 	 */
 	public void drawTileImage(int tileValue, int row, int col, Graphics2D g2) {
 		// FIXME: reduce the number of calls to the code below. When does drawImage really need to be called?
+		if (this.mapFlag[row][col]) {return;}
 		BufferedImage image = this.images.get(tileValue);
 		g2.drawImage(image, row * this.tileSize, col * this.tileSize, null);
+		this.mapFlag[row][col] = true;
 	}
 
 	/**
@@ -384,6 +388,8 @@ public class Level {
 	 */
 	public void updateTile(int x, int y, int tileID) {
 		this.map[x][y] = tileID;
+		// DONE Add code here.
+		this.mapFlag[x][y] = false;
 	}
 
 	/**
